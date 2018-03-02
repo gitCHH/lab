@@ -1,6 +1,6 @@
 # encoding=utf-8
 
-# 取得cedd在GPU、CPU上的运行时间，并画出条形图
+# 取得cedd在GPU、CPU上的运行时间,这个时间是处理完全部被分配到的frame，并画出条形图
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -36,6 +36,7 @@ def get_PU_runtime(m5out_dir):
         print(m5out_dir+'实验结果不完整。')
     else:
         PU_times = get_runtime(len(dump_sequence), m5out_dir)
+        # dump1是第一次，dump2是最后一次
         idx_gpu_dump1=dump_sequence.index('gd1')
         idx_gpu_dump2=dump_sequence('gd2')
         idx_cpu_dump1=dump_sequence.index('cd1')

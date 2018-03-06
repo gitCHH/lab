@@ -84,7 +84,7 @@ def plot_n_threads(n_thread):
         ax.set_xticklabels(ratios)
         ax.set_xticks(index)
         ax.set_title(bench)
-        ax.set_ylabel('Execution time(ms)')
+        ax.set_ylabel('Execution Time(ms)')
         ax.set_xlabel('Data Ratio of CPU(%)')
         #ax.set_xlim(0,20)
         #ax.set_ylim(0,10)

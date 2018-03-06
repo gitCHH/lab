@@ -65,7 +65,7 @@ def plot_n_threads(n_thread):
         gpu_heights=[]
         max_heights=[]# to draw line
         for percent in ratios:
-            m5out_dir = '/home/huan/6t/'+bench+'/maxwell_m5out/'
+            m5out_dir = '/home/huan/6t/'+bench+'/fermi_m5out/'
             m5out_dir = m5out_dir + bench + percent + '/'
             time_CG=get_PU_runtime(m5out_dir)
             if len(time_CG)<=1:
@@ -79,7 +79,7 @@ def plot_n_threads(n_thread):
         ax.set_xticklabels(ratios)
         ax.set_xticks(index)
         ax.set_title(bench)
-        ax.set_ylabel('Execution time(ms)')
+        ax.set_ylabel('Execution Time(ms)')
         ax.set_xlabel('Data Ratio of CPU(%)')
         #ax.set_xlim(0,20)
         #ax.set_ylim(0,10)

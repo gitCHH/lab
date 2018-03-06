@@ -32,7 +32,7 @@ def get_runtime(time_count, m5out_dir):
 
 def get_PU_runtime(m5out_dir):
     dump_sequence=check_complete(m5out_dir)
-    if len(dump_sequence)<>n_frame:
+    if len(dump_sequence)<>2*n_frame:
         print(m5out_dir+'实验结果不完整。')
     else:
         PU_times = get_runtime(len(dump_sequence), m5out_dir)
@@ -49,8 +49,8 @@ def get_PU_runtime(m5out_dir):
         time_CG.append(gpu_runtime)
         return time_CG
 
-benchmarks = ['bs'] # HSTI, HSTO, SC are not balance
-ratios = ['0','5', '10', '15', '20', '25', '30', '35']
+benchmarks = ['cedd']
+ratios = ['5', '10', '15', '20', '25', '30']# '0',, '35'
 fewBenchmarks=[]
 fewRatios=[]
 
@@ -68,6 +68,8 @@ def plot_n_threads(n_thread):
             m5out_dir = '/home/huan/6t/'+bench+'/maxwell_m5out/'
             m5out_dir = m5out_dir + bench + percent + '/'
             time_CG=get_PU_runtime(m5out_dir)
+            if len(time_CG)<=1:
+                break
             cpu_heights.append(time_CG[0])
             gpu_heights.append(time_CG[1])
             max_heights.append(max(time_CG))
@@ -81,9 +83,9 @@ def plot_n_threads(n_thread):
         ax.set_xlabel('Data Ratio of CPU(%)')
         #ax.set_xlim(0,20)
         #ax.set_ylim(0,10)
-        ax.bar(index-bar_width/2,cpu_heights,bar_width,alpha=opacity,color='r',label='CPU')
-        ax.bar(index+bar_width/2,gpu_heights,bar_width,alpha=opacity,color='b',label='GPU')
-        ax.plot(index+bar_width/2,max_heights,color='black',linestyle='--', marker='o',alpha=opacity)
+        ax.bar(index-bar_width,cpu_heights,bar_width,alpha=opacity,color='r',label='CPU')
+        ax.bar(index,gpu_heights,bar_width,alpha=opacity,color='b',label='GPU')
+        ax.plot(index,max_heights,color='black',linestyle='--', marker='o',alpha=opacity)
         ax.legend()
 
     fig.tight_layout()

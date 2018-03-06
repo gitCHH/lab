@@ -58,14 +58,13 @@ index=np.arange(1,len(ratios)+1)
 bar_width=0.35
 opacity = 0.4
 
-def plot_n_threads(n_thread):
-    fig,axs=plt.subplots(len(benchmarks),1,figsize=(6,9),frameon =False)
-    for bench in benchmarks:
+def plot_n_threads(n_thread,bench,gpu_arch):
+    fig,axs=plt.subplots(1,1,figsize=(6,9),frameon =False)
         cpu_heights=[]
         gpu_heights=[]
         max_heights=[]# to draw line
         for percent in ratios:
-            m5out_dir = '/home/huan/6t/'+bench+'/fermi_m5out/'
+            m5out_dir = '/home/huan/'+n_thread+'t/'+bench+'/'+gpu_arch+'_m5out/'
             m5out_dir = m5out_dir + bench + percent + '/'
             time_CG=get_PU_runtime(m5out_dir)
             if len(time_CG)<=1:

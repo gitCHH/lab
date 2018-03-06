@@ -12,7 +12,7 @@ def predict(cpu_time, cpu_ratio,gpu_time,grain):
     elif g_v>c_v:
         return int(res)-int(res)%grain
     elif g_v<c_v:
-        return int(int(res)-int(res)%grain+grain)
+        return int(res)-int(res)%grain+grain # 不知为何返回float， why?
 
 def check_complete(m5out_dir):
     i = False
@@ -64,7 +64,7 @@ def plot(cpu_init_ratio,bench,n_threads,gpu_arch,grain):
     m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(cpu_init_ratio)+'/'
     init_CG_time=get_PU_runtime(m5out_dir)
     new_ratio=predict(init_CG_time[0],cpu_init_ratio,init_CG_time[1],grain)
-    m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(new_ratio)+'/'
+    m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(int(new_ratio))+'/'
     CG_time=get_PU_runtime(m5out_dir)
     fig, axs = plt.subplots(1, 1, figsize=(4, 6), frameon=False)
     ax = axs

@@ -88,9 +88,9 @@ def plot_n_threads(n_thread):
         ax.set_xlabel('Data Ratio of CPU(%)')
         #ax.set_xlim(0,20)
         #ax.set_ylim(0,10)
-        ax.bar(index-bar_width/2,cpu_heights,bar_width,alpha=opacity,color='r',label='CPU')
-        ax.bar(index+bar_width/2,gpu_heights,bar_width,alpha=opacity,color='b',label='GPU')
-        ax.plot(index+bar_width/2,max_heights,color='black',linestyle='--', marker='o',alpha=opacity)
+        ax.bar(index-bar_width,cpu_heights,bar_width,alpha=opacity,color='r',label='CPU')
+        ax.bar(index,gpu_heights,bar_width,alpha=opacity,color='b',label='GPU')
+        ax.plot(index,max_heights,color='black',linestyle='--', marker='o',alpha=opacity)
         ax.legend()
 
     fig.tight_layout()

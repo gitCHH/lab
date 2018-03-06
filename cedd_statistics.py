@@ -38,9 +38,10 @@ def get_PU_runtime(m5out_dir):
         PU_times = get_runtime(len(dump_sequence), m5out_dir)
         # dump1是第一次，dump2是最后一次
         idx_gpu_dump1=dump_sequence.index('gd1')
-        idx_gpu_dump2=dump_sequence('gd2')
+        idx_gpu_dump2=len(dump_sequence)-1- dump_sequence[::-1].index('gd2')
         idx_cpu_dump1=dump_sequence.index('cd1')
-        idx_cpu_dump2=dump_sequence.index('cd2')
+        idx_cpu_dump2=len(dump_sequence)-1- dump_sequence[::-1].index('cd2')
+
         gpu_runtime = (PU_times[idx_gpu_dump2]-PU_times[idx_gpu_dump1])*1000
         cpu_runtime = (PU_times[idx_cpu_dump2]-PU_times[idx_cpu_dump1])*1000
         time_CG=[]

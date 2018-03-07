@@ -56,44 +56,39 @@ def get_PU_runtime(m5out_dir):
         time_CG.append(gpu_runtime)
         return time_CG
 
-benchmarks = ['bs'] # HSTI, HSTO, SC are not balance
-ratios = ['0','5', '10', '15', '20', '25', '30', '35']
-fewBenchmarks=[]
-fewRatios=[]
 
+ratios = ['0','5', '10', '15', '20', '25', '30', '35']
 index=np.arange(1,len(ratios)+1)
 bar_width=0.35
 opacity = 0.4
 
-def plot_n_threads(n_thread):
-    fig,axs=plt.subplots(len(benchmarks),1,figsize=(6,9),frameon =False)
-    for bench in benchmarks:
-        cpu_heights=[]
-        gpu_heights=[]
-        max_heights=[]# to draw line
-        for percent in ratios:
-            m5out_dir = '/home/huan/6t/'+bench+'/maxwell_m5out/'
-            m5out_dir = m5out_dir + bench + percent + '/'
-            time_CG=get_PU_runtime(m5out_dir)
-            cpu_heights.append(time_CG[0])
-            gpu_heights.append(time_CG[1])
-            max_heights.append(max(time_CG))
-        print('cpu: ',cpu_heights)
-        print('gpu: ',gpu_heights)
-        ax=axs
-        ax.set_xticklabels(ratios)
-        ax.set_xticks(index)
-        ax.set_title(bench)
-        ax.set_ylabel('Execution Time(ms)')
-        ax.set_xlabel('Data Ratio of CPU(%)')
-        #ax.set_xlim(0,20)
-        #ax.set_ylim(0,10)
-        ax.bar(index-bar_width,cpu_heights,bar_width,alpha=opacity,color='r',label='CPU')
-        ax.bar(index,gpu_heights,bar_width,alpha=opacity,color='b',label='GPU')
-        ax.plot(index,max_heights,color='black',linestyle='--', marker='o',alpha=opacity)
-        ax.legend()
-
+def plot(n_thread=6,bench='rscd',gpu_arch='maxwell'):
+    fig,axs=plt.subplots(1,1,figsize=(6,9),frameon =False)
+    cpu_heights=[]
+    gpu_heights=[]
+    max_heights=[]# to draw line
+    for percent in ratios:
+        m5out_dir = '/home/huan/'+str(n_thread)+'t/'+bench+'/'+gpu_arch+'_m5out/'
+        m5out_dir = m5out_dir + bench + percent + '/'
+        time_CG=get_PU_runtime(m5out_dir)
+        cpu_heights.append(time_CG[0])
+        gpu_heights.append(time_CG[1])
+        max_heights.append(max(time_CG))
+    print('cpu: ',cpu_heights)
+    print('gpu: ',gpu_heights)
+    ax=axs
+    ax.set_xticklabels(ratios)
+    ax.set_xticks(index)
+    ax.set_title(bench)
+    ax.set_ylabel('Execution Time(ms)')
+    ax.set_xlabel('Data Ratio of CPU(%)')
+    #ax.set_xlim(0,20)
+    #ax.set_ylim(0,10)
+    ax.bar(index-bar_width,cpu_heights,bar_width,alpha=opacity,color='r',label='CPU')
+    ax.bar(index,gpu_heights,bar_width,alpha=opacity,color='b',label='GPU')
+    ax.plot(index,max_heights,color='black',linestyle='--', marker='o',alpha=opacity)
+    ax.legend()
     fig.tight_layout()
     plt.show()
-
-plot_n_threads(6)
+# HSTI, HSTO, SC are not balance
+plot(6,'rscd','maxwell')

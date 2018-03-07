@@ -62,7 +62,7 @@ index=np.arange(1,len(ratios)+1)
 bar_width=0.35
 opacity = 0.4
 
-def plot(n_thread=6,bench='rscd',gpu_arch='maxwell'):
+def plot(n_thread,bench,gpu_arch='maxwell'):
     fig,axs=plt.subplots(1,1,figsize=(6,9),frameon =False)
     cpu_heights=[]
     gpu_heights=[]

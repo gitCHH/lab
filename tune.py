@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 # 返回在CPU上处理的数据比例,time(ms),ratio(%)
+# crazy idea: GPU处理100%的数据后，预测一个比例，或预测CPU上处理一些数据会性能会更好
 def predict(cpu_time, cpu_ratio,gpu_time,grain):
     c_v=cpu_ratio/cpu_time # 整除，两个整数，结果为整数
     g_v=(100-cpu_ratio)/gpu_time
@@ -60,7 +61,7 @@ def get_PU_runtime(m5out_dir):
         time_CG.append(gpu_runtime)
         return time_CG
 
-def plot(cpu_init_ratio,bench,n_threads,gpu_arch,grain):
+def plot(cpu_init_ratio,bench,n_threads=6,gpu_arch='maxwell',grain=5):
     m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(cpu_init_ratio)+'/'
     init_CG_time=get_PU_runtime(m5out_dir)
     new_ratio=predict(init_CG_time[0],cpu_init_ratio,init_CG_time[1],grain)

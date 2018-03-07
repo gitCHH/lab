@@ -41,7 +41,7 @@ def get_runtime(time_count, m5out_dir):
 
 def get_PU_runtime(m5out_dir):
     dump_sequence=check_complete(m5out_dir)
-    if len(dump_sequence)<>2*n_frame:
+    if len(dump_sequence)!=2*n_frame:
         print(m5out_dir+'实验结果不完整。')
     else:
         PU_times = get_runtime(len(dump_sequence), m5out_dir)

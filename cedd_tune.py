@@ -45,19 +45,20 @@ def get_PU_runtime(m5out_dir):
         print(m5out_dir+'实验结果不完整。')
     else:
         PU_times = get_runtime(len(dump_sequence), m5out_dir)
+        time_CG = []
+        if dump_sequence.count('cd1')<=0 or dump_sequence.count('cd2')<=0:
+            time_CG.append(0)
+        else:
+            idx_cpu_dump1 = dump_sequence.index('cd1')
+            idx_cpu_dump2 = len(dump_sequence) - 1 - dump_sequence[::-1].index('cd2')
+            cpu_runtime = (PU_times[idx_cpu_dump2] - PU_times[idx_cpu_dump1]) * 1000
+            time_CG.append(cpu_runtime)
         # dump1是第一次，dump2是最后一次
         idx_gpu_dump1=dump_sequence.index('gd1')
         idx_gpu_dump2=len(dump_sequence)-1- dump_sequence[::-1].index('gd2')
-        idx_cpu_dump1=dump_sequence.index('cd1')
-        idx_cpu_dump2=len(dump_sequence)-1- dump_sequence[::-1].index('cd2')
-
         gpu_runtime = (PU_times[idx_gpu_dump2]-PU_times[idx_gpu_dump1])*1000
-        cpu_runtime = (PU_times[idx_cpu_dump2]-PU_times[idx_cpu_dump1])*1000
-        time_CG=[]
-        time_CG.append(cpu_runtime)
         time_CG.append(gpu_runtime)
         return time_CG
-
 
 def plot(cpu_init_ratio,bench,n_threads,gpu_arch,grain):
     m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(cpu_init_ratio)+'/'

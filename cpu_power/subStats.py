@@ -71,12 +71,11 @@ def common_generator():
     gpu_arch='fermi'
     for R in ratios:
         work_dir='/home/huan/'+cpu_threads+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+R+'/'
-        stats=work_dir+'stats.txt'
         dump_sequence=check_complete(work_dir)
         #idx_CGD={}
-        for i in range(1,len(dump_sequence)+1):
+        for i in range(1,5):
             #idx_CGD[i]=dump_sequence[i]
-            new_file='stats_'+str(i)+'_'+dump_sequence[i]
+            new_file='stats_'+str(i)+'_'+dump_sequence[i-1]
             get_Nth_paragraph(i,work_dir,new_file)
 
 def cedd_generator():
@@ -86,14 +85,28 @@ def cedd_generator():
     gpu_arch = 'fermi'
     for R in ratios:
         work_dir = '/home/huan/' + cpu_threads + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + R + '/'
-        stats = work_dir + 'stats.txt'
         dump_sequence = check_complete(work_dir)
         # idx_CGD={}
-        for i in range(1, len(dump_sequence) + 1):
-            # idx_CGD[i]=dump_sequence[i]
-            new_file = 'stats_' + str(i) + '_' + dump_sequence[i]
-            get_Nth_paragraph(i, work_dir, new_file)
+        idx_cpu_dump1 = dump_sequence.index('cd1')
+        idx_cpu_dump2 = len(dump_sequence) - 1 - dump_sequence[::-1].index('cd2')
+        idx_gpu_dump1 = dump_sequence.index('gd1')
+        idx_gpu_dump2 = len(dump_sequence) - 1 - dump_sequence[::-1].index('gd2')
+        get_Nth_paragraph(idx_cpu_dump1+1,work_dir,'stats_'+str(idx_cpu_dump1+1)+'_cd1')
+        get_Nth_paragraph(idx_cpu_dump2+1,work_dir,'stats_'+str(idx_cpu_dump2+1)+'_cd2')
+        get_Nth_paragraph(idx_gpu_dump1+1,work_dir,'stats_'+str(idx_gpu_dump1+1)+'_gd1')
+        get_Nth_paragraph(idx_gpu_dump2+1,work_dir,'stats_'+str(idx_gpu_dump2+1)+'_gd2')
 
+def all_on_GPU_CPU():
+    benches = ['bs']  # cedd,rscd, sc,hsto,hsti
+    cpu_threads = '6'
+    gpu_arch = 'fermi'
+    for b in benches:
+        work_dir = '/home/huan/' + cpu_threads + 't/' + b + '/' + gpu_arch + '_m5out/' + b  + '0/'
+        dump_sequence = check_complete(work_dir)
+        get_Nth_paragraph(len(dump_sequence),work_dir,'stats_allGPU.txt')
+        work_dir = '/home/huan/' + cpu_threads + 't/' + b + '/' + gpu_arch + '_m5out/' + b + '100/'
+        dump_sequence = check_complete(work_dir)
+        get_Nth_paragraph(len(dump_sequence), work_dir, 'stats_allCPU.txt')
 
 if __name__ == '__main__':
     pass

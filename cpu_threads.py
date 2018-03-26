@@ -115,4 +115,4 @@ def plot(bench, gpu_arch='maxwell'):
 
 
 # HSTI, HSTO, SC are not balance
-plot('rscd', 'maxwell')
+plot('bs', 'maxwell')

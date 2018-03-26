@@ -110,4 +110,4 @@ def plot(bench,gpu_arch):
     fig.tight_layout()
     plt.show()
 
-plot('cedd','maxwell')
+plot('cedd','fermi')

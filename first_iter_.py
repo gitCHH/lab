@@ -91,4 +91,4 @@ def plot(n_thread,bench,gpu_arch='maxwell'):
     fig.tight_layout()
     plt.show()
 # HSTI, HSTO, SC are not balance
-plot(6,'rscd','maxwell')
+plot(6,'bs','maxwell')

@@ -90,4 +90,4 @@ def plot(cpu_init_ratio,bench,n_threads=6,gpu_arch='maxwell',grain=5):
     fig.tight_layout()
     plt.show()
 
-plot(5,'bs',6,'maxwell',5)
+plot(5,'rscd',6,'maxwell',5)

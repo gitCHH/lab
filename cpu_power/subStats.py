@@ -40,7 +40,7 @@ def valid(total,N):
     else:
         return True
 
-def get_Nth_paragraph(paragraph_idx,work_dir,new_name):
+def get_Nth_paragraph(paragraph_idx,work_dir,new_name='newFile.txt'):
     '''
     Get a paragraph of stats.txt.
     :param paragraph_idx: The target paragraph index starting with 1.
@@ -50,8 +50,8 @@ def get_Nth_paragraph(paragraph_idx,work_dir,new_name):
     '''
     dump_sequence=check_complete(work_dir)
     total=len(dump_sequence)+1
-    if not valid(total,paragraph_idx):
-        return False
+    #if not valid(total,paragraph_idx):
+    #    return False
     stats_file = work_dir + '/stats.txt'
     stats_first = work_dir + new_name
     writer = open(stats_first, 'w')
@@ -59,9 +59,43 @@ def get_Nth_paragraph(paragraph_idx,work_dir,new_name):
     for line in open(stats_file):
         if line.find('---------- B') >= 0:
             target_idx=target_idx+1
-            if target_idx==paragraph_idx:
+        if target_idx==paragraph_idx:
                 writer.write(line)
     writer.flush()
     writer.close()
 
-get_Nth_paragraph(1,'/home/huan/6t/bs/maxwell_m5out/bs5/','1.txt')
+def common_generator():
+    ratios = []
+    bench = 'bs' # rscd, sc,hsto,hsti
+    cpu_threads='6'
+    gpu_arch='fermi'
+    for R in ratios:
+        work_dir='/home/huan/'+cpu_threads+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+R+'/'
+        stats=work_dir+'stats.txt'
+        dump_sequence=check_complete(work_dir)
+        #idx_CGD={}
+        for i in range(1,len(dump_sequence)+1):
+            #idx_CGD[i]=dump_sequence[i]
+            new_file='stats_'+str(i)+'_'+dump_sequence[i]
+            get_Nth_paragraph(i,work_dir,new_file)
+
+def cedd_generator():
+    ratios = []
+    bench = 'cedd'
+    cpu_threads = '6'
+    gpu_arch = 'fermi'
+    for R in ratios:
+        work_dir = '/home/huan/' + cpu_threads + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + R + '/'
+        stats = work_dir + 'stats.txt'
+        dump_sequence = check_complete(work_dir)
+        # idx_CGD={}
+        for i in range(1, len(dump_sequence) + 1):
+            # idx_CGD[i]=dump_sequence[i]
+            new_file = 'stats_' + str(i) + '_' + dump_sequence[i]
+            get_Nth_paragraph(i, work_dir, new_file)
+
+
+if __name__ == '__main__':
+    pass
+
+

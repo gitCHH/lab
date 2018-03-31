@@ -64,11 +64,7 @@ def get_Nth_paragraph(paragraph_idx,work_dir,new_name='newFile.txt'):
     writer.flush()
     writer.close()
 
-def common_generator():
-    ratios = []
-    bench = 'bs' # rscd, sc,hsto,hsti
-    cpu_threads='6'
-    gpu_arch='fermi'
+def common_generator(bench,ratios,cpu_threads='6',gpu_arch='maxwell'):
     for R in ratios:
         work_dir='/home/huan/'+cpu_threads+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+R+'/'
         dump_sequence=check_complete(work_dir)
@@ -78,11 +74,8 @@ def common_generator():
             new_file='stats_'+str(i)+'_'+dump_sequence[i-1]
             get_Nth_paragraph(i,work_dir,new_file)
 
-def cedd_generator():
-    ratios = []
+def cedd_generator(ratios,cpu_threads,gpu_arch = 'maxwell'):
     bench = 'cedd'
-    cpu_threads = '6'
-    gpu_arch = 'fermi'
     for R in ratios:
         work_dir = '/home/huan/' + cpu_threads + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + R + '/'
         dump_sequence = check_complete(work_dir)
@@ -96,19 +89,16 @@ def cedd_generator():
         get_Nth_paragraph(idx_gpu_dump1+1,work_dir,'stats_'+str(idx_gpu_dump1+1)+'_gd1')
         get_Nth_paragraph(idx_gpu_dump2+1,work_dir,'stats_'+str(idx_gpu_dump2+1)+'_gd2')
 
-def all_on_GPU_CPU():
-    benches = ['bs']  # cedd,rscd, sc,hsto,hsti
-    cpu_threads = '6'
-    gpu_arch = 'fermi'
-    for b in benches:
-        work_dir = '/home/huan/' + cpu_threads + 't/' + b + '/' + gpu_arch + '_m5out/' + b  + '0/'
-        dump_sequence = check_complete(work_dir)
-        get_Nth_paragraph(len(dump_sequence),work_dir,'stats_allGPU.txt')
-        work_dir = '/home/huan/' + cpu_threads + 't/' + b + '/' + gpu_arch + '_m5out/' + b + '100/'
-        dump_sequence = check_complete(work_dir)
-        get_Nth_paragraph(len(dump_sequence), work_dir, 'stats_allCPU.txt')
+def all_on_GPU_CPU(bench,cpu_threads='6',gpu_arch='maxwell'):
+    work_dir = '/home/huan/' + cpu_threads + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + '0/'
+    dump_sequence = check_complete(work_dir)
+    get_Nth_paragraph(len(dump_sequence),work_dir,'stats_allGPU.txt')
+    #work_dir = '/home/huan/' + cpu_threads + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + '100/'
+    #dump_sequence = check_complete(work_dir)
+    #get_Nth_paragraph(len(dump_sequence), work_dir, 'stats_allCPU.txt')
 
 if __name__ == '__main__':
+    ratios = ['0', '5', '10', '15', '20', '25', '30', '35']
     pass
 
 

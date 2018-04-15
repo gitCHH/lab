@@ -57,7 +57,7 @@ def get_PU_runtime(m5out_dir):
         return time_CG
 
 
-ratios = ['0','5', '10', '15', '20', '25', '30', '35']
+ratios = ['0', '5','10','15',  '20', '25', '30', '35']#
 index=np.arange(1,len(ratios)+1)
 bar_width=0.35
 opacity = 0.4
@@ -68,14 +68,14 @@ def plot(n_thread,bench,gpu_arch='maxwell'):
     gpu_heights=[]
     max_heights=[]# to draw line
     for percent in ratios:
-        m5out_dir = '/home/huan/'+str(n_thread)+'t/'+bench+'/'+gpu_arch+'_m5out/'
+        m5out_dir = 'D:/6TTiming/'+bench+'/'+gpu_arch+'_m5out/'
         m5out_dir = m5out_dir + bench + percent + '/'
         time_CG=get_PU_runtime(m5out_dir)
         cpu_heights.append(time_CG[0])
         gpu_heights.append(time_CG[1])
         max_heights.append(max(time_CG))
-    print('cpu: ',cpu_heights)
-    print('gpu: ',gpu_heights)
+    #print('cpu: ',cpu_heights)
+    #print('gpu: ',gpu_heights)
     ax=axs
     ax.set_xticklabels(ratios)
     ax.set_xticks(index)
@@ -91,4 +91,4 @@ def plot(n_thread,bench,gpu_arch='maxwell'):
     fig.tight_layout()
     plt.show()
 # HSTI, HSTO, SC are not balance
-plot(6,'bs','maxwell')
+#plot(6,'sc','fermi')

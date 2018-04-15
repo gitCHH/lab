@@ -61,10 +61,10 @@ def get_PU_runtime(m5out_dir):
         return time_CG
 
 def plot(cpu_init_ratio,bench,n_threads,gpu_arch,grain):
-    m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(cpu_init_ratio)+'/'
+    m5out_dir='D:/6TTiming/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(cpu_init_ratio)+'/'
     init_CG_time=get_PU_runtime(m5out_dir)
     new_ratio=predict(init_CG_time[0],cpu_init_ratio,init_CG_time[1],grain)
-    m5out_dir='/home/huan/'+str(n_threads)+'t/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(int(new_ratio))+'/'
+    m5out_dir='D:/6TTiming/'+bench+'/'+gpu_arch+'_m5out/'+bench+str(int(new_ratio))+'/'
     CG_time=get_PU_runtime(m5out_dir)
     fig, axs = plt.subplots(1, 1, figsize=(4, 6), frameon=False)
     ax = axs
@@ -89,4 +89,4 @@ def plot(cpu_init_ratio,bench,n_threads,gpu_arch,grain):
     fig.tight_layout()
     plt.show()
 
-plot(15,'cedd',6,'maxwell',5)
+#plot(15,'cedd',6,'maxwell',5)

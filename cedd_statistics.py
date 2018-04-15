@@ -62,7 +62,7 @@ def plot(n_thread,bench,gpu_arch):
     gpu_heights=[]
     max_heights=[]# to draw line
     for percent in ratios:
-        m5out_dir = '/home/huan/'+str(n_thread)+'t/'+bench+'/'+gpu_arch+'_m5out/'
+        m5out_dir = 'D:/6TTiming/'+bench+'/'+gpu_arch+'_m5out/'
         m5out_dir = m5out_dir + bench + percent + '/'
         time_CG=get_PU_runtime(m5out_dir)
         if len(time_CG)<=1:
@@ -88,4 +88,4 @@ def plot(n_thread,bench,gpu_arch):
     fig.tight_layout()
     plt.show()
 
-plot(6,'cedd','maxwell')
+#plot(6,'cedd','fermi')

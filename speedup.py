@@ -2,31 +2,95 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import cedd_statistics
-import first_iter_
-import cedd_tune
-import tune
+from cedd_statistics import get_PU_runtime as getCeddRuntime
+from statistics import get_PU_runtime as getRuntime
+from cedd_tune import predict as predictCedd
+from tune import predict
 
-patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
-hatch=patterns[0]
+patterns = ["/", "\\", "|", "-", "+", "x", "o", "O", ".", "*"]
+hatch = patterns[0]
 
-def plot(n_threads=6,gpu_arch='maxwell',grain=5):
-    bench_initRatio={'bs':10,'cedd':20,'rscd':20}
-    bench='bs'
-    m5out_dir = '/home/huan/' + str(n_threads) + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + str(
-        bench_initRatio[bench]) + '/'
-    if bench=='cedd':
-        time_all_GPU=cedd_statistics.get_PU_runtime('/home/huan/6t/cedd/cedd0/')
-        init_CG_time = cedd_statistics.get_PU_runtime(m5out_dir)
-        new_ratio = cedd_tune.predict(init_CG_time[0], bench_initRatio[bench], init_CG_time[1], grain)
-        m5out_dir = '/home/huan/' + str(n_threads) + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + str(
-        int(new_ratio)) + '/'
-        CG_time = cedd_statistics.get_PU_runtime(m5out_dir)
-    else:
-        init_CG_time = first_iter_.get_PU_runtime(m5out_dir)
-        new_ratio = tune.predict(init_CG_time[0], bench_initRatio[bench], init_CG_time[1], grain)
-        m5out_dir = '/home/huan/' + str(n_threads) + 't/' + bench + '/' + gpu_arch + '_m5out/' + bench + str(
-            int(new_ratio)) + '/'
-        CG_time = first_iter_.get_PU_runtime(m5out_dir)
-    fig, axs = plt.subplots(1, 1, figsize=(4, 6), frameon=False)
-    ax = axs
+
+def f(gpu_arch='fermi', grain=5):
+    m5out_dir_home = 'D:/6TTiming/'
+    bench_initRatio = { 'bs':10,'cedd': 20, 'rscd': 20}
+    GPU_heights = []
+    Init_heights = []
+    Tuned_heights = []
+    for bench in bench_initRatio.keys():
+        m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
+            bench_initRatio[bench]) + '/'
+        if bench == 'cedd':
+            time_all_GPU = getCeddRuntime(m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + '0/')
+            init_CG_time = getCeddRuntime(m5out_dir)
+            new_ratio = predictCedd(init_CG_time[0], bench_initRatio[bench], init_CG_time[1], grain)
+            m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
+                int(new_ratio)) + '/'
+            CG_time = getCeddRuntime(m5out_dir)
+        else:
+            time_all_GPU = getRuntime(m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + '0/')
+            init_CG_time = getRuntime(m5out_dir)
+            new_ratio = predict(init_CG_time[0], bench_initRatio[bench], init_CG_time[1], grain)
+            m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
+                int(new_ratio)) + '/'
+            CG_time = getRuntime(m5out_dir)
+        GPU_heights.append(max(time_all_GPU))
+        Init_heights.append(max(init_CG_time))
+        Tuned_heights.append(max(CG_time))
+
+    fig, axs = plt.subplots(1, 2, figsize=(4, 6), frameon=False)
+    ax = axs[0]
+    ax.set_xticklabels(bench_initRatio.keys())
+    index = np.arange(1, len(bench_initRatio) + 1)
+    bar_width = 0.15
+    opacity = 0.2
+    ax.set_xticks(index)
+    ax.set_title(bench)
+    ax.set_ylabel('Execution Time(ms)')
+    ax.set_xlabel('Fermi GPU')
+
+    ax.bar(index - bar_width, GPU_heights, bar_width, hatch='.', alpha=opacity, color='black', label='GPU')
+    ax.bar(index, Init_heights, bar_width, hatch='/', alpha=opacity, color='black', label='init')
+    ax.bar(index+bar_width, Tuned_heights, bar_width, hatch='|', alpha=opacity, color='black', label='tuned')
+    ax.legend()
+    GPU_heights.clear()
+    Init_heights.clear()
+    Tuned_heights.clear()
+    gpu_arch='maxwell'
+    for bench in bench_initRatio.keys():
+        m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
+            bench_initRatio[bench]) + '/'
+        if bench == 'cedd':
+            time_all_GPU = getCeddRuntime(m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + '0/')
+            init_CG_time = getCeddRuntime(m5out_dir)
+            new_ratio = predictCedd(init_CG_time[0], bench_initRatio[bench], init_CG_time[1], grain)
+            m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
+                int(new_ratio)) + '/'
+            CG_time = getCeddRuntime(m5out_dir)
+        else:
+            time_all_GPU = getRuntime(m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + '0/')
+            init_CG_time = getRuntime(m5out_dir)
+            new_ratio = predict(init_CG_time[0], bench_initRatio[bench], init_CG_time[1], grain)
+            m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
+                int(new_ratio)) + '/'
+            CG_time = getRuntime(m5out_dir)
+        GPU_heights.append(max(time_all_GPU))
+        Init_heights.append(max(init_CG_time))
+        Tuned_heights.append(max(CG_time))
+    ax = axs[1]
+    ax.set_xticklabels(bench_initRatio.keys())
+    index = np.arange(1, len(bench_initRatio) + 1)
+    bar_width = 0.15
+    opacity = 0.2
+    ax.set_xticks(index)
+    ax.set_title(bench)
+    ax.set_ylabel('Execution Time(ms)')
+    ax.set_xlabel('Maxwell GPU')
+
+    ax.bar(index - bar_width, GPU_heights, bar_width, hatch='.', alpha=opacity, color='black', label='GPU')
+    ax.bar(index, Init_heights, bar_width, hatch='/', alpha=opacity, color='black', label='init')
+    ax.bar(index + bar_width, Tuned_heights, bar_width, hatch='|', alpha=opacity, color='black', label='tuned')
+    ax.legend()
+    fig.tight_layout()
+    plt.show()
+f()

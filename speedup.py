@@ -34,6 +34,7 @@ def f(gpu_arch='fermi', grain=5):
             m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
                 int(new_ratio)) + '/'
             CG_time = getRuntime(m5out_dir)
+        print('Fermi r:',new_ratio)
         GPU_heights.append(max(time_all_GPU))
         Init_heights.append(max(init_CG_time))
         Tuned_heights.append(max(CG_time))
@@ -77,6 +78,7 @@ def f(gpu_arch='fermi', grain=5):
             m5out_dir = m5out_dir_home + bench + '/' + gpu_arch + '_m5out/' + bench + str(
                 int(new_ratio)) + '/'
             CG_time = getRuntime(m5out_dir)
+        print('Maxwell r:', new_ratio)
         GPU_heights.append(max(time_all_GPU))
         Init_heights.append(max(init_CG_time))
         Tuned_heights.append(max(CG_time))

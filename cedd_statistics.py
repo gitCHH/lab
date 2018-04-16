@@ -88,4 +88,4 @@ def plot(n_thread,bench,gpu_arch):
     fig.tight_layout()
     plt.show()
 
-#plot(6,'cedd','fermi')
+plot(6,'cedd','fermi')

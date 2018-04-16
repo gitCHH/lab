@@ -89,4 +89,4 @@ def plot(cpu_init_ratio,bench,n_threads,gpu_arch,grain):
     fig.tight_layout()
     plt.show()
 
-#plot(15,'cedd',6,'maxwell',5)
+plot(20,'cedd',6,'fermi',5)

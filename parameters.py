@@ -56,9 +56,11 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
     CPU_demand_hits = []  # fermi has
     demand_accesses = []  # misses = accesses -hits
     seq = dump_seq(m5out_dir)
-    # print(seq)
     start = seq.index('cd1') + 1
     end = seq.index('cd2') + 1
+    print('---- ---- 段落信息 ---- ----')
+    print('dump sequence: ',seq)
+    print('start, end: ',start,end)
     # print(start,end)
     for line in open(m5out_dir + 'stats.txt'):
         if line.find('---------- Begin Sim') == 0:
@@ -109,11 +111,30 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
                 CPU_demand_hits.append(int(line.split()[1]))
             elif line.find('system.ruby.l2_cntrl0.L2cache.demand_accesses') == 0:
                 demand_accesses.append(int(line.split()[1]))
+    print('---- ---- 数据校验 ---- ----')
     print('general: ', len(committedOps), len(conditional_control_insts), len(Branches), len(No_OpClass))
     print('Int: ', len(IntAlu), len(IntMult), len(IntDiv))
     print('Float: ', len(FloatAdd), len(FloatCmp), len(FloatCvt), len(FloatMult), len(FloatDiv), len(FloatSqrt))
     print('Mem: ', len(MemRead), len(MemWrite))
     print('L2cache: ', len(demand_hits), len(demand_accesses), len(CPU_demand_hits), len(GPU_demand_hits))
-
+    ops=sum(committedOps[-8:])-sum(committedOps[:8])
+    conditionals=sum(conditional_control_insts[-8:])-sum(conditional_control_insts[:8])
+    branches=sum(Branches[-8:])-sum(Branches[:8])
+    # noclass_sum=sum(No_OpClass[-8:])-sum(No_OpClass[:8])
+    ints=sum(IntAlu[-8:])+sum(IntMult[-8:])+sum(IntDiv[-8:])-sum(IntAlu[:8])-sum(IntMult[:8])-sum(IntDiv[:8])
+    floats=sum(FloatAdd[-8:])+sum(FloatCmp[-8:])+sum(FloatCvt[-8:])+sum(FloatDiv[-8:])+sum(FloatMult[-8:])+sum(FloatSqrt[-8:])-    sum(FloatAdd[:8])-sum(FloatCmp[:8])-sum(FloatCvt[:8])-sum(FloatDiv[:8])-sum(FloatMult[:8])-sum(FloatSqrt[:8])
+    reads=sum(MemRead[-8:])-sum(MemRead[:8])
+    writes=sum(MemWrite[-8:])-sum(MemWrite[:8])
+    hits=demand_hits[1]-demand_hits[0]
+    accesses=demand_accesses[1]-demand_accesses[0]
+    print('---- ----- 指令比例 ---- ----')
+    print('conditional rate: ',conditionals/ops)
+    print('branch rate (all): ',branches/ops)
+    print('branch rate(cnd): ',branches/conditionals)
+    print('int rate: ',ints/ops)
+    print('float rate: ',floats/ops)
+    print('math rate: ',(ints+floats)/ops)
+    print('mem rate: ',(reads+writes)/ops)
+    print('L2cache hit rate: ',hits/accesses)
 
 readStats('bs', '3_300', 10, 'fermi')

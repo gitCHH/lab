@@ -5,8 +5,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-n_frame = 20
-
 # 检查terminal output中 gd2/cd2数量之和是否等于n_frame,dump flag数组为空表示实验结果不完整！
 def check_complete(m5out_dir):
     dump_sequence=[]
@@ -51,19 +49,14 @@ def get_PU_runtime(m5out_dir):
         time_CG.append(gpu_runtime)
         return time_CG
 
-ratios = ['0','5', '10', '15', '20', '25', '30']
-index=np.arange(1,len(ratios)+1)
-bar_width=0.35
-opacity = 0.4
-
-def plot(n_thread,bench,gpu_arch):
+def plot(bench,workload,gpu_arch='maxwell'):
     fig,axs=plt.subplots(1,1,figsize=(6,9),frameon =False)
     cpu_heights=[]
     gpu_heights=[]
     max_heights=[]# to draw line
     for percent in ratios:
-        m5out_dir = 'D:/6TTiming/'+bench+'/'+gpu_arch+'_m5out/'
-        m5out_dir = m5out_dir + bench + percent + '/'
+        m5out_dir = 'D:/more/'+bench+'_'+workload+'/'+gpu_arch+'_m5out/'
+        m5out_dir = m5out_dir + bench + str(percent) + '/'
         time_CG=get_PU_runtime(m5out_dir)
         if len(time_CG)<=1:
             break
@@ -87,5 +80,9 @@ def plot(n_thread,bench,gpu_arch):
 
     fig.tight_layout()
     plt.show()
-
-plot(6,'cedd','fermi')
+n_frame = 20
+ratios = [0,5,10,15,20,200]
+index=np.arange(1,len(ratios)+1)
+bar_width=0.35
+opacity = 0.4
+plot('cedd',str(n_frame),'maxwell')

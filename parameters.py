@@ -59,8 +59,8 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
     start = seq.index('cd1') + 1
     end = seq.index('cd2') + 1
     print('---- ---- 段落信息 ---- ----')
-    print('dump sequence: ',seq)
-    print('start, end: ',start,end)
+    print('dump sequence: ', seq)
+    print('start, end: ', start, end)
     # print(start,end)
     for line in open(m5out_dir + 'stats.txt'):
         if line.find('---------- Begin Sim') == 0:
@@ -69,13 +69,13 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
             break
         elif n_begin == start or n_begin == end:
             if line.find('system.cpu') == 0:
-                key=line.split()[0]
+                key = line.split()[0]
                 # print(key)
                 value = int(float(line.split()[1]))  # python3 中取消了long
                 # print(key.rfind('committedOps'))
                 if key.rfind('committedOps') >= 0:
                     committedOps.append(value)
-                elif key.rfind('conditional_control_insts') >= 0:
+                elif key.rfind('num_conditional_control_insts') >= 0:
                     conditional_control_insts.append(value)
                 elif key.rfind('Branches') >= 0:
                     Branches.append(value)
@@ -87,7 +87,7 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
                     IntMult.append(value)
                 elif key.rfind('op_class::IntDiv') >= 0:
                     IntDiv.append(value)
-                elif key.rfind('op_class::FloatAdd')>=0:
+                elif key.rfind('op_class::FloatAdd') >= 0:
                     FloatAdd.append(value)
                 elif key.rfind('op_class::FloatCmp') >= 0:
                     FloatCmp.append(value)
@@ -103,7 +103,7 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
                     MemRead.append(value)
                 elif key.rfind('op_class::MemWrite') >= 0:
                     MemWrite.append(value)
-            elif line.find('system.ruby.l2_cntrl0.L2cache.demand_hits')==0:
+            elif line.find('system.ruby.l2_cntrl0.L2cache.demand_hits') == 0:
                 demand_hits.append(int(line.split()[1]))
             elif line.find('system.ruby.l2_cntrl0.L2cache.GPU_demand_hits') == 0:
                 GPU_demand_hits.append(int(line.split()[1]))
@@ -117,24 +117,29 @@ def readStats(bench, workload, f, gpu_arch='maxwell'):
     print('Float: ', len(FloatAdd), len(FloatCmp), len(FloatCvt), len(FloatMult), len(FloatDiv), len(FloatSqrt))
     print('Mem: ', len(MemRead), len(MemWrite))
     print('L2cache: ', len(demand_hits), len(demand_accesses), len(CPU_demand_hits), len(GPU_demand_hits))
-    ops=sum(committedOps[-8:])-sum(committedOps[:8])
-    conditionals=sum(conditional_control_insts[-8:])-sum(conditional_control_insts[:8])
-    branches=sum(Branches[-8:])-sum(Branches[:8])
+    ops = sum(committedOps[-8:]) - sum(committedOps[:8])
+    conditionals = sum(conditional_control_insts[-8:]) - sum(conditional_control_insts[:8])
+    branches = sum(Branches[-8:]) - sum(Branches[:8])
     # noclass_sum=sum(No_OpClass[-8:])-sum(No_OpClass[:8])
-    ints=sum(IntAlu[-8:])+sum(IntMult[-8:])+sum(IntDiv[-8:])-sum(IntAlu[:8])-sum(IntMult[:8])-sum(IntDiv[:8])
-    floats=sum(FloatAdd[-8:])+sum(FloatCmp[-8:])+sum(FloatCvt[-8:])+sum(FloatDiv[-8:])+sum(FloatMult[-8:])+sum(FloatSqrt[-8:])-    sum(FloatAdd[:8])-sum(FloatCmp[:8])-sum(FloatCvt[:8])-sum(FloatDiv[:8])-sum(FloatMult[:8])-sum(FloatSqrt[:8])
-    reads=sum(MemRead[-8:])-sum(MemRead[:8])
-    writes=sum(MemWrite[-8:])-sum(MemWrite[:8])
-    hits=demand_hits[1]-demand_hits[0]
-    accesses=demand_accesses[1]-demand_accesses[0]
+    ints = sum(IntAlu[-8:]) + sum(IntMult[-8:]) + sum(IntDiv[-8:]) - sum(IntAlu[:8]) - sum(IntMult[:8]) - sum(
+        IntDiv[:8])
+    floats = sum(FloatAdd[-8:]) + sum(FloatCmp[-8:]) + sum(FloatCvt[-8:]) + sum(FloatDiv[-8:]) + sum(
+        FloatMult[-8:]) + sum(FloatSqrt[-8:]) - sum(FloatAdd[:8]) - sum(FloatCmp[:8]) - sum(FloatCvt[:8]) - sum(
+        FloatDiv[:8]) - sum(FloatMult[:8]) - sum(FloatSqrt[:8])
+    reads = sum(MemRead[-8:]) - sum(MemRead[:8])
+    writes = sum(MemWrite[-8:]) - sum(MemWrite[:8])
+    noclass = sum(No_OpClass[-8:]) - sum(No_OpClass[:8])
+    hits = demand_hits[1] - demand_hits[0]
+    accesses = demand_accesses[1] - demand_accesses[0]
     print('---- ----- 指令比例 ---- ----')
-    print('conditional rate: ',conditionals/ops)
-    print('branch rate (all): ',branches/ops)
-    print('branch rate(cnd): ',branches/conditionals)
-    print('int rate: ',ints/ops)
-    print('float rate: ',floats/ops)
-    print('math rate: ',(ints+floats)/ops)
-    print('mem rate: ',(reads+writes)/ops)
-    print('L2cache hit rate: ',hits/accesses)
+    print('int rate: ', round(ints / (ops + branches), 3))
+    print('float rate: ', round(floats / (ops + branches), 3))
+    print('memread rate: ', round(reads / (ops + branches), 3))
+    print('memwrite rate: ', round(writes / (ops + branches), 3))
+    print('real branch rate: ', round(conditionals / (ops + branches), 3))
+    print('other branch rate: ', round((branches - conditionals) / (ops + branches), 3))
+    print('otherOp rate: ', round(noclass / (ops + branches), 3))
+    print('L2cache hit rate: ', round(hits / accesses, 2))
 
-readStats('bs', '3_300', 10, 'fermi')
+
+readStats('sc', '50', 100, 'maxwell')
